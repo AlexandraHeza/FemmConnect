@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Mentoras</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h2>👩‍🏫 Nuestras mentoras</h2>
+  <div id="lista-mentoras"></div>
+  <script>
+    fetch('/api/mentoras')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('lista-mentoras').innerHTML = data.map(m => `
+          <div class="card">${m.nombre} - ${m.especialidad}<br>
+          <a href="agenda.html?mentoraId=${m.id}">Solicitar mentoría</a></div>
+        `).join('');
+      });
+  </script>
+</body>
+</html>

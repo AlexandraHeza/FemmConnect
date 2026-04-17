@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - FemmConecta</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="login-container">
+    <h2>💜 Iniciar sesión</h2>
+    <select id="rol">
+      <option value="emprendedora">Emprendedora</option>
+      <option value="mentora">Mentora</option>
+      <option value="compradora">Compradora</option>
+    </select>
+    <input type="email" id="email" placeholder="Correo electrónico">
+    <input type="password" id="password" placeholder="Contraseña">
+    <button id="btnLogin">Entrar</button>
+    <p id="mensaje"></p>
+  </div>
+  <script>
+    document.getElementById('btnLogin').onclick = async () => {
+      const rol = document.getElementById('rol').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, rol })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('usuario', JSON.stringify(data.usuario));
+        window.location.href = 'index.html';
+      } else {
+        document.getElementById('mensaje').innerText = data.error;
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+/* Paleta: morado #6a1b9a, rosa #f48fb1, fondo #fce4ec */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, 'Segoe UI', sans-serif;
+}
+
+body {
+  background: #fce4ec;
+  color: #4a0040;
+  padding: 1rem;
+}
+
+header {
+  background: #6a1b9a;
+  padding: 1rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  border-radius: 0 0 20px 20px;
+}
+
+nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  padding: 1rem;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.whatsapp {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25d366;
+  color: white;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  text-decoration: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 100;
+}
+
+button, .btn {
+  background: #6a1b9a;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #f48fb1;
+  color: #4a0040;
+}
+
+@media (max-width: 600px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+  nav {
+    margin-top: 10px;
+  }
+}

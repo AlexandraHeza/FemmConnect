@@ -1,0 +1,12 @@
+{
+  "usuarios": [
+    { "id": 1, "nombre": "Ana", "email": "ana@mail.com", "password": "123456", "rol": "emprendedora", "especialidad": "Moda sostenible", "telefono": "5512345678", "descripcion": "Diseño ropa ecológica" },
+    { "id": 2, "nombre": "Laura", "email": "laura@mail.com", "password": "123456", "rol": "mentora", "especialidad": "Marketing digital", "descripcion": "Experta en branding", "disponibilidad": ["lunes 10am", "miércoles 3pm"] },
+    { "id": 3, "nombre": "Martha", "email": "martha@mail.com", "password": "123456", "rol": "compradora" }
+  ],
+  "productos": [
+    { "id": 1, "nombre": "Bolso de fibra natural", "precio": 450, "imagen": "https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg", "descripcion": "Hecho a mano por emprendedora local", "vendedoraId": 1 },
+    { "id": 2, "nombre": "Aretes artesanales", "precio": 120, "imagen": "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908", "descripcion": "Plata y resina", "vendedoraId": 1 }
+  ],
+  "solicitudesMentoria": []
+}

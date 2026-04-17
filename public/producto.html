@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tienda individual</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div id="detalle"></div>
+  <script>
+    const id = new URLSearchParams(location.search).get('id');
+    fetch(`/api/productos/${id}`)
+      .then(res => res.json())
+      .then(p => {
+        document.getElementById('detalle').innerHTML = `
+          <h2>${p.nombre}</h2>
+          <img src="${p.imagen}" width="200">
+          <p>${p.descripcion}</p>
+          <p>Precio: $${p.precio}</p>
+          <h3>Métodos de pago</h3>
+          <button onclick="alert('MercadoPago demo')">Pagar con MercadoPago</button>
+          <button onclick="alert('Transferencia: cuenta demo')">Transferencia directa</button>
+        `;
+      });
+  </script>
+</body>
+</html>

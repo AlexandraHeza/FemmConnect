@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Agenda mentoría</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <h2>📅 Solicitar mentoría</h2>
+  <div id="disponibilidad"></div>
+  <form id="formMentoria">
+    <input type="hidden" id="mentoraId" value="">
+    <input type="date" id="fecha" required>
+    <textarea placeholder="Cuéntanos tu duda..." required></textarea>
+    <button type="submit">Enviar solicitud</button>
+  </form>
+  <script>
+    const params = new URLSearchParams(location.search);
+    const mentoraId = params.get('mentoraId');
+    document.getElementById('mentoraId').value = mentoraId;
+
+    fetch(`/api/mentoras/${mentoraId}/disponibilidad`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('disponibilidad').innerHTML = `<p>Disponible: ${data.disponibilidad.join(', ')}</p>`;
+      });
+
+    document.getElementById('formMentoria').onsubmit = async (e) => {
+      e.preventDefault();
+      const fecha = document.getElementById('fecha').value;
+      const mensaje = document.querySelector('textarea').value;
+      const token = localStorage.getItem('token');
+      if (!token) return alert('Debes iniciar sesión');
+
+      await fetch('/api/mentoras/solicitar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': token },
+        body: JSON.stringify({ mentoraId, fecha, mensaje, solicitanteId: 1 })
+      });
+      alert('Solicitud enviada');
+    };
+  </script>
+</body>
+</html>

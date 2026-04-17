@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FemmConecta | Home</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header>
+    <h1>💜 FemmConecta</h1>
+    <nav>
+      <a href="index.html">Inicio</a>
+      <a href="catalogo.html">Catálogo</a>
+      <a href="mentoras.html">Mentoras</a>
+      <a href="agenda.html">Agenda</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h2>Conecta, aprende y vende</h2>
+      <p>Para emprendedoras, mentoras y compradoras</p>
+    </section>
+
+    <section class="dashboard">
+      <h3>📌 Emprendedoras destacadas</h3>
+      <div id="lista-emprendedoras" class="grid"></div>
+    </section>
+  </main>
+
+  <!-- Botón WhatsApp flotante -->
+  <a href="https://wa.me/521234567890" class="whatsapp" target="_blank">💬</a>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Cargar emprendedoras al inicio
+    fetch('/api/usuarios/emprendedoras')
+      .then(res => res.json())
+      .then(data => {
+        const container = document.getElementById('lista-emprendedoras');
+        container.innerHTML = data.map(emp => `
+          <div class="card">
+            <h4>${emp.nombre}</h4>
+            <p>${emp.especialidad}</p>
+            <a href="emprendedora.html?id=${emp.id}">Ver más</a>
+          </div>
+        `).join('');
+      });
+  </script>
+</body>
+</html>

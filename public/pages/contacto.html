@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto — FEMMConecta</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, #1a0f3c, var(--morado));
+      padding: 4rem 1.5rem 3rem; text-align: center;
+    }
+    .page-header h1 { color: #fff; }
+    .page-header p  { color: rgba(255,255,255,0.8); margin-top: 0.5rem; }
+
+    .contacto-layout {
+      max-width: 1100px; margin: 3rem auto;
+      padding: 0 1.5rem 5rem;
+      display: grid; grid-template-columns: 1fr 1.5fr; gap: 3rem; align-items: start;
+    }
+
+    /* Panel izquierdo: info de contacto */
+    .contacto-info .card { padding: 2rem; }
+    .contacto-info-item {
+      display: flex; gap: 1rem; align-items: flex-start;
+      margin-bottom: 1.5rem; padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--gris-borde);
+    }
+    .contacto-info-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .contacto-ico {
+      width: 48px; height: 48px; flex-shrink: 0;
+      background: #EDE4F8; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+    .contacto-info-titulo { font-weight: 700; color: var(--morado-oscuro); font-size: 0.92rem; margin-bottom: 0.2rem; }
+    .contacto-info-valor  { font-size: 0.88rem; color: #666; }
+    .contacto-info-valor a { color: var(--morado-claro); }
+    .contacto-info-valor a:hover { color: var(--rosa); }
+
+    /* Mapa ficticio */
+    .mapa-placeholder {
+      background: linear-gradient(135deg, #EDE4F8, #FCE4F5);
+      border-radius: 16px;
+      height: 200px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      margin-top: 1.5rem;
+      border: 2px dashed var(--morado-claro);
+      color: var(--morado); font-size: 0.88rem; text-align: center;
+    }
+    .mapa-placeholder span { font-size: 2.5rem; display: block; margin-bottom: 0.5rem; }
+
+    /* Formulario */
+    .contacto-form .card { padding: 2.5rem; }
+    .form-titulo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem; color: var(--morado-oscuro);
+      margin-bottom: 1.5rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .confirmacion-ok {
+      text-align: center; padding: 3rem 2rem; display: none;
+    }
+    .confirmacion-ok .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .confirmacion-ok h3 { color: var(--morado-oscuro); margin-bottom: 0.5rem; }
+    .confirmacion-ok p  { color: #666; font-size: 0.95rem; }
+
+    /* Redes sociales */
+    .redes { display: flex; gap: 0.6rem; margin-top: 1.25rem; }
+    .red-btn {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      background: #EDE4F8; color: var(--morado);
+      transition: var(--transicion);
+    }
+    .red-btn:hover { background: var(--morado); color: #fff; transform: translateY(-2px); }
+
+    @media (max-width: 768px) {
+      .contacto-layout { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="page-header">
+    <h1>Contáctanos 💌</h1>
+    <p>Estamos aquí para ayudarte a crecer</p>
+  </div>
+
+  <div class="contacto-layout">
+
+    <!-- Info de contacto -->
+    <div class="contacto-info">
+      <div class="card">
+        <h2 style="font-size:1.2rem; margin-bottom:1.5rem;">Información de contacto</h2>
+
+        <div class="contacto-info-item">
+          <div class="contacto-ico">📍</div>
+          <div>
+            <p class="contacto-info-titulo">Ubicación</p>
+            <p class="contacto-info-valor">Pilares Gustavo A. Madero<br>Alcaldía Gustavo A. Madero, CDMX</p>
+          </div>
+        </div>
+
+        <div class="contacto-info-item">
+          <div class="contacto-ico">📧</div>
+          <div>
+            <p class="contacto-info-titulo">Correo electrónico</p>
+            <p class="contacto-info-valor"><a href="mailto:hola@femmconecta.mx">hola@femmconecta.mx</a></p>
+          </div>
+        </div>
+
+        <div class="contacto-info-item">
+          <div class="contacto-ico">📱</div>
+          <div>
+            <p class="contacto-info-titulo">WhatsApp</p>
+            <p class="contacto-info-valor">
+              <a href="https://wa.me/5215512345678" target="_blank">+52 55 1234 5678</a><br>
+              <span style="font-size:0.78rem; color:#aaa;">Lun–Vie · 9:00–18:00</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="contacto-info-item">
+          <div class="contacto-ico">🕐</div>
+          <div>
+            <p class="contacto-info-titulo">Horario de atención</p>
+            <p class="contacto-info-valor">Lunes a Viernes: 9:00 – 18:00<br>Sábados: 10:00 – 14:00</p>
+          </div>
+        </div>
+
+        <!-- Redes -->
+        <p style="font-weight:700; font-size:0.88rem; color:var(--morado-oscuro); margin-bottom:0.75rem;">Síguenos</p>
+        <div class="redes">
+          <a href="#" class="red-btn" title="Instagram">📸</a>
+          <a href="#" class="red-btn" title="Facebook">📘</a>
+          <a href="https://wa.me/5215512345678" target="_blank" class="red-btn" title="WhatsApp">💬</a>
+          <a href="#" class="red-btn" title="TikTok">🎵</a>
+        </div>
+
+        <!-- Mapa placeholder -->
+        <div class="mapa-placeholder">
+          <span>🗺️</span>
+          Gustavo A. Madero, CDMX<br>
+          <small style="color:var(--morado-claro); margin-top:0.25rem; display:block;">Integrar Google Maps en producción</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="contacto-form">
+      <div class="card">
+        <h2 class="form-titulo">Envíanos un mensaje</h2>
+
+        <div id="formContacto">
+          <div id="alertaContacto"></div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Nombre *</label>
+              <input type="text" id="ctNombre" class="form-input" placeholder="Tu nombre">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Correo *</label>
+              <input type="email" id="ctEmail" class="form-input" placeholder="tu@correo.mx">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Asunto</label>
+            <select id="ctAsunto" class="form-select">
+              <option value="">-- Selecciona un asunto --</option>
+              <option>Quiero ser emprendedora en la plataforma</option>
+              <option>Quiero ser mentora</option>
+              <option>Tengo un problema técnico</option>
+              <option>Quiero hacer una alianza</option>
+              <option>Información general</option>
+              <option>Otro</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Mensaje *</label>
+            <textarea id="ctMensaje" class="form-textarea" rows="5"
+              placeholder="Cuéntanos en qué podemos ayudarte..."></textarea>
+          </div>
+
+          <button class="btn btn-primario" style="width:100%; justify-content:center;" onclick="enviarMensaje()">
+            Enviar mensaje 💜
+          </button>
+        </div>
+
+        <!-- Confirmación -->
+        <div class="confirmacion-ok" id="confirmacionContacto">
+          <div class="icon">✅</div>
+          <h3>¡Mensaje enviado!</h3>
+          <p>Gracias por escribirnos. Te responderemos en las próximas 24 horas.</p>
+          <button class="btn btn-secundario" onclick="nuevoMensaje()" style="margin-top:1.5rem;">Enviar otro mensaje</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Banner ser parte -->
+  <section style="background: linear-gradient(135deg, var(--rosa), var(--morado)); padding: 4rem 1.5rem; text-align:center; margin-top:0;">
+    <div style="max-width:600px; margin:0 auto;">
+      <h2 style="color:#fff; margin-bottom:0.75rem;">¿Lista para ser parte de FEMMConecta?</h2>
+      <p style="color:rgba(255,255,255,0.85); margin-bottom:1.75rem;">Únete a nuestra comunidad de emprendedoras y transforma tu negocio.</p>
+      <a href="../index.html" class="btn btn-blanco">Crear mi cuenta gratis</a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">FEMM<span>Conecta</span></div>
+        <p style="font-size:0.88rem;">Plataforma digital para mujeres emprendedoras de la GAM, CDMX.</p>
+      </div>
+      <div>
+        <p class="footer-h4">Navegar</p>
+        <ul class="footer-links">
+          <li><a href="dashboard.html">Inicio</a></li>
+          <li><a href="emprendedoras.html">Emprendedoras</a></li>
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="mentoras.html">Mentoras</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-h4">Pilares GAM</p>
+        <ul class="footer-links">
+          <li><a href="#">Gustavo A. Madero, CDMX</a></li>
+          <li><a href="mailto:hola@femmconecta.mx">hola@femmconecta.mx</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">© 2024 FEMMConecta · Pilares Gustavo A. Madero · Hecho con 💜 en CDMX</p>
+  </footer>
+
+  <script src="../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const usuario = Auth.requerirSesion();
+      if (!usuario) return;
+      construirNavbar('contacto.html');
+
+      // Autocompletar
+      document.getElementById('ctNombre').value = usuario.nombre || '';
+      document.getElementById('ctEmail').value  = usuario.email  || '';
+    });
+
+    async function enviarMensaje() {
+      const nombre  = document.getElementById('ctNombre').value.trim();
+      const email   = document.getElementById('ctEmail').value.trim();
+      const asunto  = document.getElementById('ctAsunto').value;
+      const mensaje = document.getElementById('ctMensaje').value.trim();
+
+      if (!nombre || !email || !mensaje) {
+        return mostrarAlerta('alertaContacto', 'Por favor completa los campos obligatorios.', 'error');
+      }
+
+      try {
+        await apiFetch('/api/mentoras/contacto/mensaje', {
+          method: 'POST',
+          body: { nombre, email, asunto, mensaje }
+        });
+
+        document.getElementById('formContacto').style.display     = 'none';
+        document.getElementById('confirmacionContacto').style.display = 'block';
+
+      } catch (err) {
+        mostrarAlerta('alertaContacto', 'Error al enviar: ' + err.message, 'error');
+      }
+    }
+
+    function nuevoMensaje() {
+      document.getElementById('ctMensaje').value                  = '';
+      document.getElementById('ctAsunto').value                   = '';
+      document.getElementById('formContacto').style.display       = 'block';
+      document.getElementById('confirmacionContacto').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>

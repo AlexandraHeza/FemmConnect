@@ -1,12 +1,144 @@
 {
   "usuarios": [
-    { "id": 1, "nombre": "Ana", "email": "ana@mail.com", "password": "123456", "rol": "emprendedora", "especialidad": "Moda sostenible", "telefono": "5512345678", "descripcion": "Diseño ropa ecológica" },
-    { "id": 2, "nombre": "Laura", "email": "laura@mail.com", "password": "123456", "rol": "mentora", "especialidad": "Marketing digital", "descripcion": "Experta en branding", "disponibilidad": ["lunes 10am", "miércoles 3pm"] },
-    { "id": 3, "nombre": "Martha", "email": "martha@mail.com", "password": "123456", "rol": "compradora" }
+    {
+      "id": "u1",
+      "nombre": "Agustina Hernández",
+      "email": "agustina@femm.mx",
+      "password": "1234",
+      "rol": "emprendedora",
+      "especialidad": "Productos de colmena y bienestar natural",
+      "bio": "Más de 15 años vendiendo productos oaxaqueños. Recientemente incorporé la línea de bienestar Vital Health.",
+      "foto": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80",
+      "whatsapp": "5215512345678",
+      "ubicacion": "Gustavo A. Madero, CDMX"
+    },
+    {
+      "id": "u2",
+      "nombre": "Lourdes Morales",
+      "email": "lourdes@femm.mx",
+      "password": "1234",
+      "rol": "emprendedora",
+      "especialidad": "Vivero familiar y plantas medicinales",
+      "bio": "Licenciada en Biología y madre de dos hijos. Transformé mi pasión por las plantas en Mamá Diferente.",
+      "foto": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&q=80",
+      "whatsapp": "5215598765432",
+      "ubicacion": "Gustavo A. Madero, CDMX"
+    },
+    {
+      "id": "u3",
+      "nombre": "Mónica Mendoza",
+      "email": "monica@femm.mx",
+      "password": "1234",
+      "rol": "emprendedora",
+      "especialidad": "Diseño creativo, arte y decoración",
+      "bio": "Artista plástica con 10 años de experiencia. Creo piezas únicas para espacios y eventos.",
+      "foto": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&q=80",
+      "whatsapp": "5215511223344",
+      "ubicacion": "Gustavo A. Madero, CDMX"
+    },
+    {
+      "id": "m1",
+      "nombre": "Rocío Elizabeth",
+      "email": "rocio@femm.mx",
+      "password": "1234",
+      "rol": "mentora",
+      "especialidad": "Marketing digital y redes sociales",
+      "bio": "10 años ayudando a mujeres a construir su marca personal en línea. Especialista en Instagram y TikTok para negocios.",
+      "foto": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80",
+      "disponibilidad": ["Lunes 10:00", "Lunes 16:00", "Martes 11:00", "Miércoles 14:00", "Jueves 10:00"],
+      "whatsapp": "5215544332211",
+      "ubicacion": "CDMX"
+    },
+    {
+      "id": "m2",
+      "nombre": "Ana Villegas",
+      "email": "ana@femm.mx",
+      "password": "1234",
+      "rol": "mentora",
+      "especialidad": "Organización profesional y productividad",
+      "bio": "Consultora certificada en gestión de negocios. Te ayudo a organizar tu empresa para que crezcas sin agotarte.",
+      "foto": "https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=400&q=80",
+      "disponibilidad": ["Martes 09:00", "Miércoles 11:00", "Viernes 10:00", "Viernes 15:00"],
+      "whatsapp": "5215577889900",
+      "ubicacion": "CDMX"
+    },
+    {
+      "id": "c1",
+      "nombre": "María López",
+      "email": "maria@gmail.com",
+      "password": "1234",
+      "rol": "compradora",
+      "foto": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&q=80"
+    }
   ],
   "productos": [
-    { "id": 1, "nombre": "Bolso de fibra natural", "precio": 450, "imagen": "https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg", "descripcion": "Hecho a mano por emprendedora local", "vendedoraId": 1 },
-    { "id": 2, "nombre": "Aretes artesanales", "precio": 120, "imagen": "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908", "descripcion": "Plata y resina", "vendedoraId": 1 }
+    {
+      "id": "p1",
+      "vendedora_id": "u1",
+      "nombre": "Tarro de Miel de Abeja Pura",
+      "descripcion": "Miel 100% natural de colmenas oaxaqueñas. Sin aditivos, sin conservadores. 500g de puro sabor.",
+      "precio": 180,
+      "categoria": "Alimentos",
+      "imagen": "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=600&q=80",
+      "stock": 30,
+      "vendedora": "Agustina Hernández"
+    },
+    {
+      "id": "p2",
+      "vendedora_id": "u1",
+      "nombre": "Kit Bienestar Vital (3 productos)",
+      "descripcion": "Combo de suplementos naturales: propóleo, jalea real y miel con cúrcuma. Perfecto para fortalecer el sistema inmune.",
+      "precio": 450,
+      "categoria": "Salud",
+      "imagen": "https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=600&q=80",
+      "stock": 15,
+      "vendedora": "Agustina Hernández"
+    },
+    {
+      "id": "p3",
+      "vendedora_id": "u2",
+      "nombre": "Nochebuena Gigante",
+      "descripcion": "Planta de nochebuena cultivada orgánicamente. Tamaño grande, ideal para decoración navideña o regalo.",
+      "precio": 120,
+      "categoria": "Plantas",
+      "imagen": "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?w=600&q=80",
+      "stock": 50,
+      "vendedora": "Lourdes Morales"
+    },
+    {
+      "id": "p4",
+      "vendedora_id": "u2",
+      "nombre": "Set de Plantas Medicinales",
+      "descripcion": "6 plantas medicinales en maceta: romero, lavanda, menta, tomillo, albahaca y orégano. Con guía de cuidados.",
+      "precio": 280,
+      "categoria": "Plantas",
+      "imagen": "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600&q=80",
+      "stock": 20,
+      "vendedora": "Lourdes Morales"
+    },
+    {
+      "id": "p5",
+      "vendedora_id": "u3",
+      "nombre": "Cuadro Artesanal Abstracto",
+      "descripcion": "Pintura en acrílico sobre tela, 40x50cm. Diseño único, firmado. Ideal para sala o estudio.",
+      "precio": 850,
+      "categoria": "Arte",
+      "imagen": "https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=600&q=80",
+      "stock": 3,
+      "vendedora": "Mónica Mendoza"
+    },
+    {
+      "id": "p6",
+      "vendedora_id": "u3",
+      "nombre": "Arreglo Floral Permanente",
+      "descripcion": "Arreglo de flores secas y preservadas en caja de madera. Sin mantenimiento, dura años.",
+      "precio": 390,
+      "categoria": "Decoración",
+      "imagen": "https://images.unsplash.com/photo-1487530811015-780780169993?w=600&q=80",
+      "stock": 8,
+      "vendedora": "Mónica Mendoza"
+    }
   ],
-  "solicitudesMentoria": []
+  "solicitudes_mentoria": [],
+  "mensajes_contacto": []
 }

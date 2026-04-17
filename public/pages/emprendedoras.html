@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emprendedoras — FEMMConecta</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--morado-oscuro), var(--morado));
+      padding: 4rem 1.5rem 3rem;
+      text-align: center;
+    }
+    .page-header h1 { color: #fff; }
+    .page-header p  { color: rgba(255,255,255,0.8); font-size: 1.05rem; margin-top: 0.5rem; }
+
+    /* ── Cards de emprendedoras ─────────────────── */
+    .emp-card { overflow: hidden; }
+    .emp-banner {
+      height: 120px;
+      background: linear-gradient(135deg, var(--morado), var(--rosa));
+      position: relative;
+    }
+    .emp-banner-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.35; }
+    .emp-avatar {
+      width: 84px; height: 84px;
+      border-radius: 50%; object-fit: cover;
+      border: 4px solid var(--blanco);
+      position: absolute; bottom: -42px; left: 1.5rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .emp-body { padding: 3rem 1.5rem 1.5rem; }
+    .emp-nombre { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--morado-oscuro); font-weight: 700; margin-bottom: 0.2rem; }
+    .emp-especialidad { font-size: 0.83rem; color: var(--morado-claro); margin-bottom: 0.75rem; font-weight: 500; }
+    .emp-bio { font-size: 0.88rem; color: #666; line-height: 1.6; margin-bottom: 1.1rem; }
+    .emp-footer { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+    /* Modal de detalle */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(58, 36, 96, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 300;
+      display: flex; align-items: center; justify-content: center;
+      padding: 1rem;
+      opacity: 0; pointer-events: none;
+      transition: var(--transicion);
+    }
+    .modal-overlay.activo { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--blanco); border-radius: 24px;
+      max-width: 640px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      transform: scale(0.95);
+      transition: var(--transicion);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+    }
+    .modal-overlay.activo .modal { transform: scale(1); }
+    .modal-banner {
+      height: 160px; background: linear-gradient(135deg, var(--morado), var(--rosa));
+      position: relative; border-radius: 24px 24px 0 0; overflow: hidden;
+    }
+    .modal-banner img { width:100%; height:100%; object-fit:cover; opacity:0.25; }
+    .modal-avatar {
+      position: absolute; bottom: -40px; left: 2rem;
+      width: 80px; height: 80px;
+      border-radius: 50%; object-fit: cover;
+      border: 4px solid #fff; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .modal-cerrar {
+      position: absolute; top: 1rem; right: 1rem;
+      background: rgba(255,255,255,0.2); color: #fff;
+      border: none; border-radius: 50%; width: 36px; height: 36px;
+      font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: var(--transicion);
+    }
+    .modal-cerrar:hover { background: rgba(255,255,255,0.35); }
+    .modal-body { padding: 3.5rem 2rem 2rem; }
+    .modal-nombre { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--morado-oscuro); margin-bottom: 0.25rem; }
+    .modal-esp { color: var(--morado-claro); font-size: 0.9rem; margin-bottom: 1.25rem; }
+    .modal-bio { font-size: 0.95rem; line-height: 1.75; margin-bottom: 1.5rem; color: #555; }
+    .modal-productos-titulo { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--morado-oscuro); margin-bottom: 1rem; }
+    .modal-productos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+    .mini-prod { border-radius: 10px; overflow: hidden; border: 1px solid var(--gris-borde); }
+    .mini-prod img { width: 100%; height: 80px; object-fit: cover; }
+    .mini-prod-info { padding: 0.5rem; }
+    .mini-prod-nombre { font-size: 0.8rem; font-weight: 600; color: var(--morado-oscuro); }
+    .mini-prod-precio { font-size: 0.78rem; color: var(--rosa); font-weight: 700; }
+    .modal-acciones { display: flex; gap: 0.75rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="page-header">
+    <h1>Nuestras Emprendedoras 🌸</h1>
+    <p>Conoce a las mujeres que dan vida a FEMMConecta</p>
+  </div>
+
+  <section class="seccion contenedor">
+    <div id="alertaContainer"></div>
+    <div class="grid-3" id="gridEmprendedoras">
+      <div class="loader-wrap" style="grid-column:1/-1;"><div class="loader"></div></div>
+    </div>
+  </section>
+
+  <!-- Modal de detalle -->
+  <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+    <div class="modal" id="modal">
+      <div class="modal-banner">
+        <img id="modalBannerImg" src="" alt="">
+        <img id="modalAvatarImg" class="modal-avatar" src="" alt="">
+        <button class="modal-cerrar" onclick="cerrarModalBtn()">✕</button>
+      </div>
+      <div class="modal-body">
+        <h2 class="modal-nombre" id="modalNombre"></h2>
+        <p class="modal-esp" id="modalEsp"></p>
+        <p class="modal-bio" id="modalBio"></p>
+        <h3 class="modal-productos-titulo">Mis productos</h3>
+        <div class="modal-productos" id="modalProductos"></div>
+        <div class="modal-acciones" id="modalAcciones"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">FEMM<span>Conecta</span></div>
+        <p style="font-size:0.88rem;">Plataforma digital para mujeres emprendedoras de la GAM, CDMX.</p>
+      </div>
+      <div>
+        <p class="footer-h4">Navegar</p>
+        <ul class="footer-links">
+          <li><a href="dashboard.html">Inicio</a></li>
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="mentoras.html">Mentoras</a></li>
+          <li><a href="contacto.html">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-h4">Pilares GAM</p>
+        <ul class="footer-links">
+          <li><a href="#">Gustavo A. Madero</a></li>
+          <li><a href="#">CDMX</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">© 2024 FEMMConecta · Pilares Gustavo A. Madero</p>
+  </footer>
+
+  <script src="../js/app.js"></script>
+  <script>
+    // Almacenar datos cargados para el modal
+    let emprendedorasData = [];
+    let productosData     = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const usuario = Auth.requerirSesion();
+      if (!usuario) return;
+      construirNavbar('emprendedoras.html');
+
+      try {
+        const [resEmp, resProd] = await Promise.all([
+          apiFetch('/api/usuarios/emprendedoras'),
+          apiFetch('/api/productos')
+        ]);
+        emprendedorasData = resEmp.emprendedoras;
+        productosData     = resProd.productos;
+
+        renderEmprendedoras();
+
+        // Si viene con ?id=xxx, abrir modal directo
+        const params = new URLSearchParams(location.search);
+        const idTarget = params.get('id');
+        if (idTarget) abrirModal(idTarget);
+
+      } catch (err) {
+        mostrarAlerta('alertaContainer', 'Error cargando emprendedoras: ' + err.message, 'error');
+      }
+    });
+
+    function renderEmprendedoras() {
+      const grid = document.getElementById('gridEmprendedoras');
+      if (!emprendedorasData.length) {
+        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center;">Aún no hay emprendedoras registradas.</p>';
+        return;
+      }
+
+      grid.innerHTML = emprendedorasData.map((e, i) => `
+        <div class="card emp-card fade-in fade-in-${Math.min(i+1,4)}">
+          <div class="emp-banner">
+            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=50" alt="" class="emp-banner-img">
+            <img src="${e.foto}" alt="${e.nombre}" class="emp-avatar"
+                 onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
+          </div>
+          <div class="emp-body">
+            <p class="emp-nombre">${e.nombre}</p>
+            <p class="emp-especialidad">📌 ${e.especialidad || 'Emprendedora'}</p>
+            <p class="emp-bio">${truncar(e.bio || 'Emprendedora de la comunidad Gustavo A. Madero.', 110)}</p>
+            <div class="emp-footer">
+              <span class="badge badge-morado">${e.ubicacion || 'GAM'}</span>
+              <button class="btn btn-primario btn-sm" onclick="abrirModal('${e.id}')">Ver más →</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function abrirModal(id) {
+      const e = emprendedorasData.find(x => x.id === id);
+      if (!e) return;
+
+      document.getElementById('modalBannerImg').src = 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=800&q=50';
+      document.getElementById('modalAvatarImg').src = e.foto;
+      document.getElementById('modalNombre').textContent = e.nombre;
+      document.getElementById('modalEsp').textContent    = '📌 ' + (e.especialidad || 'Emprendedora');
+      document.getElementById('modalBio').textContent    = e.bio || 'Emprendedora comprometida con la comunidad GAM.';
+
+      // Productos de esta emprendedora
+      const misProd = productosData.filter(p => p.vendedora_id === e.id);
+      document.getElementById('modalProductos').innerHTML = misProd.length
+        ? misProd.map(p => `
+            <div class="mini-prod">
+              <img src="${p.imagen}" alt="${p.nombre}"
+                   onerror="this.src='https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=300&q=80'">
+              <div class="mini-prod-info">
+                <p class="mini-prod-nombre">${p.nombre}</p>
+                <p class="mini-prod-precio">${formatearPrecio(p.precio)}</p>
+              </div>
+            </div>
+          `).join('')
+        : '<p style="font-size:0.85rem; color:#888; grid-column:1/-1;">Sin productos publicados aún.</p>';
+
+      // Acciones
+      document.getElementById('modalAcciones').innerHTML = `
+        <a href="catalogo.html?vendedora=${e.id}" class="btn btn-secundario btn-sm">Ver todos sus productos</a>
+        ${e.whatsapp ? `<a href="https://wa.me/${e.whatsapp}?text=Hola%20${encodeURIComponent(e.nombre)},%20vi%20tu%20perfil%20en%20FEMMConecta" target="_blank" class="btn btn-primario btn-sm">WhatsApp 💬</a>` : ''}
+      `;
+
+      document.getElementById('modalOverlay').classList.add('activo');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function cerrarModal(e) {
+      if (e.target === document.getElementById('modalOverlay')) cerrarModalBtn();
+    }
+    function cerrarModalBtn() {
+      document.getElementById('modalOverlay').classList.remove('activo');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModalBtn(); });
+  </script>
+
+</body>
+</html>

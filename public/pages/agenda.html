@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agenda de Mentorías — FEMMConecta</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, #1a0f3c, var(--morado));
+      padding: 4rem 1.5rem 3rem; text-align: center;
+    }
+    .page-header h1 { color: #fff; }
+    .page-header p  { color: rgba(255,255,255,0.8); margin-top: 0.5rem; }
+
+    /* Layout */
+    .agenda-layout {
+      max-width: 1100px; margin: 3rem auto;
+      padding: 0 1.5rem 4rem;
+      display: grid; grid-template-columns: 1fr 1.4fr; gap: 3rem; align-items: start;
+    }
+
+    /* Panel izquierdo: info mentora + disponibilidad */
+    .mentora-panel .card { padding: 2rem; }
+    .mentora-panel-top { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; }
+    .mentora-panel-avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 3px solid var(--rosa-suave); }
+    .mentora-panel-nombre { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--morado-oscuro); font-weight: 700; }
+    .mentora-panel-esp    { font-size: 0.83rem; color: var(--morado-claro); }
+    .mentora-panel-bio    { font-size: 0.88rem; color: #666; line-height: 1.65; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--gris-borde); }
+
+    /* Horarios disponibles */
+    .disponibilidad-titulo { font-weight: 700; color: var(--morado-oscuro); margin-bottom: 0.75rem; font-size: 0.9rem; }
+    .horarios-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    .horario-btn {
+      padding: 0.65rem 0.5rem;
+      border: 2px solid var(--gris-borde);
+      border-radius: 10px;
+      text-align: center; cursor: pointer;
+      font-size: 0.82rem; font-weight: 600;
+      color: var(--gris-texto); background: var(--crema);
+      transition: var(--transicion);
+    }
+    .horario-btn.seleccionado { background: var(--morado); color: #fff; border-color: var(--morado); }
+    .horario-btn:hover:not(.seleccionado) { border-color: var(--morado-claro); background: #f3eeff; }
+
+    /* Panel derecho: formulario */
+    .form-panel .card { padding: 2.5rem; }
+    .form-section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem; color: var(--morado-oscuro);
+      margin-bottom: 1.5rem;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    /* Confirmación */
+    .confirmacion-ok {
+      text-align: center; padding: 3rem 2rem;
+      display: none;
+    }
+    .confirmacion-ok .icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .confirmacion-ok h3 { color: var(--morado-oscuro); margin-bottom: 0.5rem; }
+    .confirmacion-ok p  { color: #666; font-size: 0.95rem; }
+
+    @media (max-width: 768px) {
+      .agenda-layout { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="page-header">
+    <h1>Agenda una Mentoría 📅</h1>
+    <p>Elige tu mentora, selecciona un horario y envía tu solicitud</p>
+  </div>
+
+  <div id="alertaContainer" style="max-width:1100px; margin:1.5rem auto 0; padding:0 1.5rem;"></div>
+
+  <div class="agenda-layout">
+
+    <!-- Panel izquierdo -->
+    <div class="mentora-panel">
+      <!-- Selector de mentora (si no viene de URL) -->
+      <div class="card" style="margin-bottom:1.5rem;" id="selectorMentoraWrap">
+        <label class="form-label">Elige tu mentora</label>
+        <select class="form-select" id="selectorMentora" onchange="cargarMentora(this.value)">
+          <option value="">-- Selecciona una mentora --</option>
+        </select>
+      </div>
+
+      <!-- Perfil de mentora -->
+      <div class="card" id="panelMentora" style="display:none;">
+        <div class="mentora-panel-top">
+          <img class="mentora-panel-avatar" id="panelAvatar" src="" alt="">
+          <div>
+            <p class="mentora-panel-nombre" id="panelNombre"></p>
+            <p class="mentora-panel-esp" id="panelEsp"></p>
+          </div>
+        </div>
+        <p class="mentora-panel-bio" id="panelBio"></p>
+
+        <p class="disponibilidad-titulo">📅 Horarios disponibles</p>
+        <div class="horarios-grid" id="horariosGrid"></div>
+
+        <div style="margin-top:1.25rem; padding-top:1.25rem; border-top:1px solid var(--gris-borde);">
+          <p style="font-size:0.82rem; color:#888;">La sesión es por videollamada (Google Meet o Zoom). Duración: 45-60 min.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario -->
+    <div class="form-panel">
+      <div class="card">
+        <h2 class="form-section-title">Solicitud de mentoría</h2>
+
+        <!-- Form visible -->
+        <div id="formSolicitud">
+          <div id="alertaForm"></div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Tu nombre *</label>
+              <input type="text" id="solNombre" class="form-input" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Correo electrónico *</label>
+              <input type="email" id="solEmail" class="form-input" placeholder="tu@correo.mx">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Teléfono / WhatsApp</label>
+            <input type="tel" id="solTelefono" class="form-input" placeholder="55 1234 5678">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Horario preferido *</label>
+            <select id="solHorario" class="form-select">
+              <option value="">-- Elige un horario --</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">¿En qué tema necesitas orientación? *</label>
+            <select id="solTema" class="form-select">
+              <option value="">-- Selecciona un tema --</option>
+              <option>Cómo empezar mi negocio desde cero</option>
+              <option>Marketing digital y redes sociales</option>
+              <option>Cómo fijar precios y calcular ganancias</option>
+              <option>Ventas en línea y catálogos digitales</option>
+              <option>Organización y gestión del tiempo</option>
+              <option>Cómo conseguir clientes</option>
+              <option>Finanzas personales y del negocio</option>
+              <option>Otro tema</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Cuéntanos brevemente sobre tu negocio</label>
+            <textarea id="solMensaje" class="form-textarea" placeholder="¿Qué vendes? ¿En qué etapa estás? ¿Cuál es tu principal reto?" rows="4"></textarea>
+          </div>
+
+          <button class="btn btn-primario" style="width:100%; justify-content:center;" onclick="enviarSolicitud()">
+            Enviar solicitud 💜
+          </button>
+          <p style="font-size:0.78rem; color:#aaa; text-align:center; margin-top:0.75rem;">La mentora te contactará en las próximas 24-48 horas.</p>
+        </div>
+
+        <!-- Confirmación -->
+        <div class="confirmacion-ok" id="confirmacionOk">
+          <div class="icon">🎉</div>
+          <h3>¡Solicitud enviada!</h3>
+          <p id="confirmTxt"></p>
+          <a href="mentoras.html" class="btn btn-secundario" style="margin-top:1.5rem;">Ver más mentoras</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">FEMM<span>Conecta</span></div>
+        <p style="font-size:0.88rem;">Plataforma digital para mujeres emprendedoras de la GAM, CDMX.</p>
+      </div>
+      <div>
+        <p class="footer-h4">Navegar</p>
+        <ul class="footer-links">
+          <li><a href="dashboard.html">Inicio</a></li>
+          <li><a href="mentoras.html">Mentoras</a></li>
+          <li><a href="catalogo.html">Catálogo</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-h4">Pilares GAM</p>
+        <ul class="footer-links"><li><a href="#">Gustavo A. Madero, CDMX</a></li></ul>
+      </div>
+    </div>
+    <p class="footer-base">© 2024 FEMMConecta · Pilares Gustavo A. Madero</p>
+  </footer>
+
+  <script src="../js/app.js"></script>
+  <script>
+    let mentoraSeleccionada = null;
+    let horarioSeleccionado = '';
+    let todasMentoras = [];
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const usuario = Auth.requerirSesion();
+      if (!usuario) return;
+      construirNavbar('mentoras.html');
+
+      // Autocompletar con datos del usuario
+      document.getElementById('solNombre').value = usuario.nombre || '';
+      document.getElementById('solEmail').value  = usuario.email  || '';
+
+      try {
+        const res = await apiFetch('/api/mentoras');
+        todasMentoras = res.mentoras;
+
+        // Llenar selector
+        const sel = document.getElementById('selectorMentora');
+        todasMentoras.forEach(m => {
+          const op = document.createElement('option');
+          op.value = m.id;
+          op.textContent = `${m.nombre} — ${m.especialidad}`;
+          sel.appendChild(op);
+        });
+
+        // Si viene ?mentora=xxx de la URL, preseleccionar
+        const params = new URLSearchParams(location.search);
+        const idMentora = params.get('mentora');
+        if (idMentora) {
+          sel.value = idMentora;
+          cargarMentora(idMentora);
+        }
+
+      } catch (err) {
+        mostrarAlerta('alertaContainer', 'Error cargando mentoras: ' + err.message, 'error');
+      }
+    });
+
+    function cargarMentora(id) {
+      if (!id) {
+        document.getElementById('panelMentora').style.display = 'none';
+        return;
+      }
+      mentoraSeleccionada = todasMentoras.find(m => m.id === id);
+      if (!mentoraSeleccionada) return;
+
+      const m = mentoraSeleccionada;
+      document.getElementById('panelAvatar').src         = m.foto || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+      document.getElementById('panelNombre').textContent = m.nombre;
+      document.getElementById('panelEsp').textContent    = '⭐ ' + m.especialidad;
+      document.getElementById('panelBio').textContent    = m.bio || '';
+
+      // Horarios
+      const grid     = document.getElementById('horariosGrid');
+      const selHor   = document.getElementById('solHorario');
+      selHor.innerHTML = '<option value="">-- Elige un horario --</option>';
+
+      if (m.disponibilidad && m.disponibilidad.length) {
+        grid.innerHTML = m.disponibilidad.map(h => `
+          <button class="horario-btn" onclick="seleccionarHorario('${h}', this)">${h}</button>
+        `).join('');
+        m.disponibilidad.forEach(h => {
+          const op = document.createElement('option');
+          op.value = h; op.textContent = h;
+          selHor.appendChild(op);
+        });
+      } else {
+        grid.innerHTML = '<p style="font-size:0.82rem;color:#888;grid-column:1/-1;">Sin horarios registrados.</p>';
+      }
+
+      document.getElementById('panelMentora').style.display = 'block';
+      document.getElementById('panelMentora').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function seleccionarHorario(h, btn) {
+      horarioSeleccionado = h;
+      document.querySelectorAll('.horario-btn').forEach(b => b.classList.remove('seleccionado'));
+      btn.classList.add('seleccionado');
+      document.getElementById('solHorario').value = h;
+    }
+
+    async function enviarSolicitud() {
+      const nombre   = document.getElementById('solNombre').value.trim();
+      const email    = document.getElementById('solEmail').value.trim();
+      const telefono = document.getElementById('solTelefono').value.trim();
+      const horario  = document.getElementById('solHorario').value;
+      const tema     = document.getElementById('solTema').value;
+
+      if (!mentoraSeleccionada) {
+        return mostrarAlerta('alertaForm', 'Por favor selecciona una mentora.', 'error');
+      }
+      if (!nombre || !email || !horario || !tema) {
+        return mostrarAlerta('alertaForm', 'Por favor completa todos los campos obligatorios.', 'error');
+      }
+
+      try {
+        const res = await apiFetch(`/api/mentoras/${mentoraSeleccionada.id}/solicitud`, {
+          method: 'POST',
+          body: { nombre, email, telefono, horario, tema }
+        });
+
+        document.getElementById('formSolicitud').style.display = 'none';
+        document.getElementById('confirmTxt').textContent = `Tu solicitud con ${mentoraSeleccionada.nombre} para el horario "${horario}" fue enviada. Te contactará pronto.`;
+        document.getElementById('confirmacionOk').style.display = 'block';
+
+      } catch (err) {
+        mostrarAlerta('alertaForm', 'Error: ' + err.message, 'error');
+      }
+    }
+  </script>
+
+</body>
+</html>

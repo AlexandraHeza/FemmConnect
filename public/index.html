@@ -3,51 +3,342 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FemmConecta | Home</title>
+  <title>Acceso — FEMMConecta</title>
   <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Página de login ────────────────────────── */
+    body { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--morado-oscuro); overflow: hidden; }
+
+    /* Fondo animado con burbujas */
+    .fondo-burbujas {
+      position: fixed; inset: 0; overflow: hidden; z-index: 0;
+    }
+    .burbuja {
+      position: absolute; border-radius: 50%;
+      background: rgba(232, 77, 175, 0.08);
+      animation: flotar linear infinite;
+    }
+    .burbuja:nth-child(1) { width: 400px; height: 400px; left: -100px; top: -100px; animation-duration: 20s; }
+    .burbuja:nth-child(2) { width: 250px; height: 250px; right: -50px; bottom: 100px; animation-duration: 15s; animation-delay: -5s; background: rgba(139,107,191,0.1); }
+    .burbuja:nth-child(3) { width: 180px; height: 180px; left: 40%; bottom: -60px; animation-duration: 18s; animation-delay: -8s; }
+
+    @keyframes flotar {
+      0%   { transform: translateY(0) scale(1); }
+      50%  { transform: translateY(-30px) scale(1.05); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    /* Tarjeta de login */
+    .login-wrap {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr 1fr;
+      max-width: 900px; width: 92%;
+      background: var(--blanco);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+      animation: fadeIn 0.7s ease;
+    }
+
+    /* Panel izquierdo decorativo */
+    .login-panel-izq {
+      background: linear-gradient(160deg, var(--morado) 0%, var(--morado-oscuro) 100%);
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .login-panel-izq::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&q=60') center/cover;
+      opacity: 0.12;
+    }
+    .login-panel-izq > * { position: relative; z-index: 1; }
+    .login-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem; font-weight: 900;
+      color: #fff; margin-bottom: 0.5rem;
+    }
+    .login-logo span { color: var(--rosa); }
+    .login-tagline { color: rgba(255,255,255,0.8); font-size: 0.95rem; line-height: 1.6; margin-bottom: 2rem; }
+    .login-ilustracion { border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    .login-ilustracion img { width: 100%; height: 200px; object-fit: cover; }
+
+    /* Panel derecho — formulario */
+    .login-panel-der {
+      padding: 3rem 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .login-title { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .login-sub { font-size: 0.9rem; color: var(--morado-claro); margin-bottom: 2rem; }
+
+    /* Selector de rol */
+    .rol-selector {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.6rem; margin-bottom: 1.5rem;
+    }
+    .rol-btn {
+      padding: 0.65rem 0.5rem;
+      border: 2px solid var(--gris-borde);
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transicion);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--gris-texto);
+      background: var(--crema);
+    }
+    .rol-btn .rol-ico { font-size: 1.4rem; display: block; margin-bottom: 0.25rem; }
+    .rol-btn.activo {
+      border-color: var(--morado);
+      background: var(--morado);
+      color: #fff;
+    }
+    .rol-btn:hover:not(.activo) { border-color: var(--morado-claro); background: #f3eeff; }
+
+    /* Tabs registro / login */
+    .tabs {
+      display: flex; gap: 0;
+      border: 2px solid var(--gris-borde);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+    .tab-btn {
+      flex: 1; padding: 0.6rem;
+      font-weight: 600; font-size: 0.88rem;
+      color: var(--morado-claro);
+      transition: var(--transicion);
+      background: transparent;
+    }
+    .tab-btn.activo { background: var(--morado); color: #fff; }
+
+    /* Panel de formulario con transición */
+    .form-panel { display: none; }
+    .form-panel.activo { display: block; animation: fadeIn 0.35s ease; }
+
+    .link-olvide { font-size: 0.82rem; color: var(--morado-claro); text-align: right; display: block; margin-top: 0.5rem; transition: var(--transicion); }
+    .link-olvide:hover { color: var(--rosa); }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .login-wrap { grid-template-columns: 1fr; }
+      .login-panel-izq { display: none; }
+      .login-panel-der { padding: 2.5rem 1.75rem; }
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <h1>💜 FemmConecta</h1>
-    <nav>
-      <a href="index.html">Inicio</a>
-      <a href="catalogo.html">Catálogo</a>
-      <a href="mentoras.html">Mentoras</a>
-      <a href="agenda.html">Agenda</a>
-      <a href="login.html">Login</a>
-    </nav>
-  </header>
 
-  <main>
-    <section class="hero">
-      <h2>Conecta, aprende y vende</h2>
-      <p>Para emprendedoras, mentoras y compradoras</p>
-    </section>
+  <!-- Fondo animado -->
+  <div class="fondo-burbujas">
+    <div class="burbuja"></div>
+    <div class="burbuja"></div>
+    <div class="burbuja"></div>
+  </div>
 
-    <section class="dashboard">
-      <h3>📌 Emprendedoras destacadas</h3>
-      <div id="lista-emprendedoras" class="grid"></div>
-    </section>
-  </main>
+  <!-- Tarjeta principal -->
+  <div class="login-wrap">
 
-  <!-- Botón WhatsApp flotante -->
-  <a href="https://wa.me/521234567890" class="whatsapp" target="_blank">💬</a>
+    <!-- Panel izquierdo -->
+    <div class="login-panel-izq">
+      <div class="login-logo">FEMM<span>Conecta</span></div>
+      <p class="login-tagline">La plataforma digital diseñada 100% para mujeres emprendedoras de la Gustavo A. Madero.</p>
+      <div class="login-ilustracion">
+        <img src="https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=600&q=80" alt="Mujeres emprendedoras">
+      </div>
+    </div>
 
-  <script src="js/app.js"></script>
+    <!-- Panel derecho -->
+    <div class="login-panel-der">
+      <h2 class="login-title">Bienvenida 💜</h2>
+      <p class="login-sub">Selecciona tu perfil para continuar</p>
+
+      <!-- Selector de rol -->
+      <div class="rol-selector" id="rolSelector">
+        <button class="rol-btn activo" data-rol="emprendedora" onclick="seleccionarRol('emprendedora', this)">
+          <span class="rol-ico">🌸</span>Emprendedora
+        </button>
+        <button class="rol-btn" data-rol="mentora" onclick="seleccionarRol('mentora', this)">
+          <span class="rol-ico">⭐</span>Mentora
+        </button>
+        <button class="rol-btn" data-rol="compradora" onclick="seleccionarRol('compradora', this)">
+          <span class="rol-ico">🛍️</span>Compradora
+        </button>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab-btn activo" onclick="cambiarTab('login', this)">Iniciar sesión</button>
+        <button class="tab-btn" onclick="cambiarTab('registro', this)">Registrarme</button>
+      </div>
+
+      <!-- Alerta -->
+      <div id="alerta" class="alerta alerta-error" style="display:none;"></div>
+
+      <!-- Formulario: Login -->
+      <div id="panel-login" class="form-panel activo">
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <input type="email" id="login-email" class="form-input" placeholder="tu@correo.mx">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" id="login-pass" class="form-input" placeholder="••••••••">
+          <a href="#" class="link-olvide">¿Olvidaste tu contraseña?</a>
+        </div>
+        <button class="btn btn-primario" style="width:100%; justify-content:center;" onclick="iniciarSesion()">
+          Entrar a FEMMConecta
+        </button>
+        <p style="margin-top:1rem; font-size:0.8rem; color:var(--morado-claro); text-align:center;">
+          Demo: usa <strong>agustina@femm.mx</strong> / <strong>1234</strong>
+        </p>
+      </div>
+
+      <!-- Formulario: Registro -->
+      <div id="panel-registro" class="form-panel">
+        <div class="form-group">
+          <label class="form-label">Nombre completo</label>
+          <input type="text" id="reg-nombre" class="form-input" placeholder="Tu nombre">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Correo electrónico</label>
+          <input type="email" id="reg-email" class="form-input" placeholder="tu@correo.mx">
+        </div>
+        <div class="form-group" id="campo-especialidad">
+          <label class="form-label">Especialidad / Giro de negocio</label>
+          <input type="text" id="reg-especialidad" class="form-input" placeholder="Ej: Artesanías, Consultoría...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Contraseña</label>
+          <input type="password" id="reg-pass" class="form-input" placeholder="Mínimo 6 caracteres">
+        </div>
+        <button class="btn btn-primario" style="width:100%; justify-content:center;" onclick="registrarse()">
+          Crear mi cuenta
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <script>
-    // Cargar emprendedoras al inicio
-    fetch('/api/usuarios/emprendedoras')
-      .then(res => res.json())
-      .then(data => {
-        const container = document.getElementById('lista-emprendedoras');
-        container.innerHTML = data.map(emp => `
-          <div class="card">
-            <h4>${emp.nombre}</h4>
-            <p>${emp.especialidad}</p>
-            <a href="emprendedora.html?id=${emp.id}">Ver más</a>
-          </div>
-        `).join('');
-      });
+    /* ── Estado ─────────────────────────────── */
+    let rolActual = 'emprendedora';
+
+    /* ── Selección de rol ───────────────────── */
+    function seleccionarRol(rol, btn) {
+      rolActual = rol;
+      document.querySelectorAll('.rol-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+
+      // Mostrar/ocultar campo especialidad
+      const campoEsp = document.getElementById('campo-especialidad');
+      campoEsp.style.display = (rol === 'compradora') ? 'none' : 'block';
+    }
+
+    /* ── Tabs ───────────────────────────────── */
+    function cambiarTab(tab, btn) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      document.getElementById('panel-login').classList.toggle('activo', tab === 'login');
+      document.getElementById('panel-registro').classList.toggle('activo', tab === 'registro');
+      ocultarAlerta();
+    }
+
+    /* ── Alertas ────────────────────────────── */
+    function mostrarAlerta(msg, tipo = 'error') {
+      const el = document.getElementById('alerta');
+      el.textContent = msg;
+      el.className = `alerta alerta-${tipo}`;
+      el.style.display = 'flex';
+    }
+    function ocultarAlerta() {
+      document.getElementById('alerta').style.display = 'none';
+    }
+
+    /* ── Iniciar sesión ─────────────────────── */
+    async function iniciarSesion() {
+      const email = document.getElementById('login-email').value.trim();
+      const pass  = document.getElementById('login-pass').value;
+
+      if (!email || !pass) {
+        return mostrarAlerta('Por favor llena todos los campos.');
+      }
+
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password: pass })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          return mostrarAlerta(data.error || 'Error al iniciar sesión.');
+        }
+
+        // Guardar usuario en localStorage para uso en páginas
+        localStorage.setItem('femm_usuario', JSON.stringify(data.usuario));
+        mostrarAlerta(`¡Bienvenida, ${data.usuario.nombre}! Redirigiendo...`, 'exito');
+        setTimeout(() => { window.location.href = 'pages/dashboard.html'; }, 1200);
+
+      } catch (err) {
+        mostrarAlerta('Error de conexión. ¿Está corriendo el servidor?');
+      }
+    }
+
+    /* ── Registrarse ────────────────────────── */
+    async function registrarse() {
+      const nombre      = document.getElementById('reg-nombre').value.trim();
+      const email       = document.getElementById('reg-email').value.trim();
+      const pass        = document.getElementById('reg-pass').value;
+      const especialidad = document.getElementById('reg-especialidad').value.trim();
+
+      if (!nombre || !email || !pass) {
+        return mostrarAlerta('Por favor llena todos los campos.');
+      }
+
+      try {
+        const res = await fetch('/api/auth/registro', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nombre, email, password: pass, rol: rolActual, especialidad })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          return mostrarAlerta(data.error || 'Error al registrarse.');
+        }
+
+        localStorage.setItem('femm_usuario', JSON.stringify(data.usuario));
+        mostrarAlerta('¡Cuenta creada! Redirigiendo...', 'exito');
+        setTimeout(() => { window.location.href = 'pages/dashboard.html'; }, 1200);
+
+      } catch (err) {
+        mostrarAlerta('Error de conexión. ¿Está corriendo el servidor?');
+      }
+    }
+
+    /* ── Enter para enviar ──────────────────── */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        const panelLogin = document.getElementById('panel-login');
+        if (panelLogin.classList.contains('activo')) iniciarSesion();
+        else registrarse();
+      }
+    });
+
+    /* ── Si ya está logueado, redirigir ─────── */
+    if (localStorage.getItem('femm_usuario')) {
+      window.location.href = 'pages/dashboard.html';
+    }
   </script>
+
 </body>
 </html>

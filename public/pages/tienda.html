@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda — FEMMConecta</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .breadcrumb {
+      max-width: 1200px; margin: 1.5rem auto 0;
+      padding: 0 1.5rem;
+      font-size: 0.85rem; color: var(--morado-claro);
+    }
+    .breadcrumb a { color: var(--morado-claro); }
+    .breadcrumb a:hover { color: var(--rosa); }
+
+    /* Layout del producto */
+    .producto-layout {
+      max-width: 1200px; margin: 2rem auto;
+      padding: 0 1.5rem 4rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+    .producto-galeria { position: sticky; top: 90px; }
+    .prod-img-principal {
+      border-radius: 20px; overflow: hidden;
+      box-shadow: var(--sombra-hover);
+      aspect-ratio: 1;
+    }
+    .prod-img-principal img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    /* Info del producto */
+    .info-cat { margin-bottom: 0.75rem; }
+    .info-nombre {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      margin-bottom: 0.5rem;
+    }
+    .info-vendedora {
+      display: flex; align-items: center; gap: 0.6rem;
+      margin-bottom: 1.5rem;
+      padding: 0.75rem 1rem;
+      background: #f7f2ff; border-radius: 12px;
+      cursor: pointer; transition: var(--transicion);
+    }
+    .info-vendedora:hover { background: #ede4f8; }
+    .info-vendedora img {
+      width: 40px; height: 40px;
+      border-radius: 50%; object-fit: cover;
+      border: 2px solid var(--rosa-suave);
+    }
+    .info-vendedora-datos { flex: 1; }
+    .info-vendedora-nombre { font-weight: 600; font-size: 0.9rem; color: var(--morado-oscuro); }
+    .info-vendedora-rol { font-size: 0.78rem; color: var(--morado-claro); }
+
+    .info-precio { font-size: 2.2rem; font-weight: 700; color: var(--rosa); margin-bottom: 1.25rem; }
+
+    .info-desc {
+      font-size: 0.98rem; line-height: 1.8;
+      color: #555; margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--gris-borde);
+    }
+
+    /* Cantidad */
+    .cantidad-wrap {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem;
+    }
+    .cantidad-label { font-weight: 600; color: var(--morado-oscuro); }
+    .cantidad-ctrl {
+      display: flex; align-items: center; gap: 0;
+      border: 2px solid var(--gris-borde);
+      border-radius: 50px; overflow: hidden;
+    }
+    .cantidad-btn {
+      width: 38px; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700;
+      color: var(--morado);
+      cursor: pointer; transition: var(--transicion);
+      background: transparent;
+    }
+    .cantidad-btn:hover { background: var(--morado); color: #fff; }
+    #cantidadNum {
+      width: 44px; text-align: center;
+      font-weight: 700; font-size: 1rem;
+      color: var(--morado-oscuro);
+    }
+
+    /* Métodos de pago */
+    .pago-titulo {
+      font-weight: 700; font-size: 0.92rem;
+      color: var(--morado-oscuro); margin-bottom: 0.75rem;
+    }
+    .pago-opciones { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2rem; }
+    .pago-card {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1rem 1.25rem;
+      border: 2px solid var(--gris-borde);
+      border-radius: 14px; cursor: pointer;
+      transition: var(--transicion); background: var(--blanco);
+    }
+    .pago-card.seleccionado { border-color: var(--morado); background: #f7f2ff; }
+    .pago-card:hover:not(.seleccionado) { border-color: var(--morado-claro); }
+    .pago-ico { font-size: 1.6rem; }
+    .pago-nombre { font-weight: 600; font-size: 0.9rem; color: var(--morado-oscuro); }
+    .pago-detalle { font-size: 0.78rem; color: #888; }
+
+    /* Botones de acción */
+    .acciones { display: flex; flex-direction: column; gap: 0.75rem; }
+    .acciones .btn { justify-content: center; }
+
+    /* Confirmación de pedido */
+    .confirmacion {
+      background: #e8f9ef;
+      border: 2px solid #1E7A45;
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      display: none;
+    }
+    .confirmacion h3 { color: #1E7A45; margin-bottom: 0.5rem; }
+    .confirmacion p  { font-size: 0.9rem; color: #2d6a4f; }
+
+    @media (max-width: 768px) {
+      .producto-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .producto-galeria { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar"></nav>
+
+  <p class="breadcrumb" id="breadcrumb">
+    <a href="catalogo.html">← Catálogo</a> / <span id="breadNombre">Cargando...</span>
+  </p>
+
+  <div id="alertaContainer" style="max-width:1200px; margin:1rem auto; padding:0 1.5rem;"></div>
+
+  <!-- Loader -->
+  <div class="loader-wrap" id="loaderProd"><div class="loader"></div></div>
+
+  <!-- Layout del producto -->
+  <div class="producto-layout" id="productoLayout" style="display:none;">
+
+    <!-- Galería -->
+    <div class="producto-galeria">
+      <div class="prod-img-principal">
+        <img id="imgPrincipal" src="" alt="" loading="lazy">
+      </div>
+    </div>
+
+    <!-- Información -->
+    <div class="producto-info">
+      <p class="info-cat"><span class="badge badge-morado" id="infoCat"></span></p>
+      <h1 class="info-nombre" id="infoNombre"></h1>
+
+      <!-- Vendedora -->
+      <div class="info-vendedora" id="infoVendedora" onclick="">
+        <img id="vendedoraFoto" src="" alt="">
+        <div class="info-vendedora-datos">
+          <p class="info-vendedora-nombre" id="vendedoraNombre"></p>
+          <p class="info-vendedora-rol">🌸 Emprendedora FEMMConecta</p>
+        </div>
+        <span style="color:var(--morado-claro); font-size:0.8rem;">Ver perfil →</span>
+      </div>
+
+      <p class="info-precio" id="infoPrecio"></p>
+      <p class="info-desc" id="infoDesc"></p>
+
+      <!-- Cantidad -->
+      <div class="cantidad-wrap">
+        <span class="cantidad-label">Cantidad:</span>
+        <div class="cantidad-ctrl">
+          <button class="cantidad-btn" onclick="cambiarCantidad(-1)">−</button>
+          <span id="cantidadNum">1</span>
+          <button class="cantidad-btn" onclick="cambiarCantidad(1)">+</button>
+        </div>
+        <span style="font-size:0.88rem; color:#888;" id="stockInfo"></span>
+      </div>
+
+      <!-- Métodos de pago -->
+      <p class="pago-titulo">Selecciona tu forma de pago:</p>
+      <div class="pago-opciones">
+        <div class="pago-card seleccionado" onclick="seleccionarPago('mercadopago', this)">
+          <span class="pago-ico">💳</span>
+          <div>
+            <p class="pago-nombre">MercadoPago</p>
+            <p class="pago-detalle">Tarjeta, transferencia o efectivo en OXXO</p>
+          </div>
+        </div>
+        <div class="pago-card" onclick="seleccionarPago('transferencia', this)">
+          <span class="pago-ico">🏦</span>
+          <div>
+            <p class="pago-nombre">Transferencia SPEI</p>
+            <p class="pago-detalle">La vendedora te enviará los datos por WhatsApp</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total -->
+      <p style="font-size:0.92rem; color:#888; margin-bottom:1rem;">
+        Total a pagar: <strong style="color:var(--rosa); font-size:1.2rem;" id="totalPagar"></strong>
+      </p>
+
+      <!-- Acciones -->
+      <div class="acciones">
+        <button class="btn btn-primario" onclick="solicitarPedido()">🛒 Solicitar pedido</button>
+        <button class="btn btn-secundario" id="btnWhatsappVendedora">💬 Preguntar por WhatsApp</button>
+      </div>
+
+      <!-- Confirmación -->
+      <div class="confirmacion" id="confirmacion">
+        <h3>✅ ¡Pedido solicitado!</h3>
+        <p id="confirmMsg"></p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">FEMM<span>Conecta</span></div>
+        <p style="font-size:0.88rem;">Plataforma digital para mujeres emprendedoras de la GAM, CDMX.</p>
+      </div>
+      <div>
+        <p class="footer-h4">Navegar</p>
+        <ul class="footer-links">
+          <li><a href="dashboard.html">Inicio</a></li>
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="mentoras.html">Mentoras</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-h4">Pilares GAM</p>
+        <ul class="footer-links"><li><a href="#">Gustavo A. Madero, CDMX</a></li></ul>
+      </div>
+    </div>
+    <p class="footer-base">© 2024 FEMMConecta · Pilares Gustavo A. Madero</p>
+  </footer>
+
+  <script src="../js/app.js"></script>
+  <script>
+    let productoActual = null;
+    let vendedoraActual = null;
+    let cantidad = 1;
+    let pagoSeleccionado = 'mercadopago';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const usuario = Auth.requerirSesion();
+      if (!usuario) return;
+      construirNavbar('catalogo.html');
+
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      if (!id) return window.location.href = 'catalogo.html';
+
+      try {
+        const res = await apiFetch(`/api/productos/${id}`);
+        productoActual  = res.producto;
+        vendedoraActual = res.vendedora;
+
+        renderProducto();
+      } catch (err) {
+        document.getElementById('loaderProd').innerHTML = `<p style="color:red;">No se encontró el producto.</p>`;
+      }
+    });
+
+    function renderProducto() {
+      const p = productoActual;
+      const v = vendedoraActual;
+
+      document.title = `${p.nombre} — FEMMConecta`;
+      document.getElementById('breadNombre').textContent = p.nombre;
+      document.getElementById('imgPrincipal').src = p.imagen;
+      document.getElementById('imgPrincipal').alt = p.nombre;
+      document.getElementById('infoCat').textContent    = p.categoria;
+      document.getElementById('infoNombre').textContent = p.nombre;
+      document.getElementById('infoPrecio').textContent = formatearPrecio(p.precio);
+      document.getElementById('infoDesc').textContent   = p.descripcion;
+      document.getElementById('stockInfo').textContent  = `${p.stock} disponibles`;
+      document.getElementById('totalPagar').textContent = formatearPrecio(p.precio * cantidad);
+
+      if (v) {
+        document.getElementById('vendedoraFoto').src      = v.foto || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80';
+        document.getElementById('vendedoraNombre').textContent = v.nombre;
+        document.getElementById('infoVendedora').onclick  = () => { window.location.href = `emprendedoras.html?id=${v.id}`; };
+
+        const waMsg = `Hola ${v.nombre}, vi tu producto *${p.nombre}* en FEMMConecta y me interesa.`;
+        document.getElementById('btnWhatsappVendedora').onclick = () => {
+          if (v.whatsapp) {
+            window.open(`https://wa.me/${v.whatsapp}?text=${encodeURIComponent(waMsg)}`, '_blank');
+          } else {
+            mostrarAlerta('alertaContainer', 'Esta vendedora no tiene WhatsApp registrado.', 'info');
+          }
+        };
+      }
+
+      document.getElementById('loaderProd').style.display  = 'none';
+      document.getElementById('productoLayout').style.display = 'grid';
+    }
+
+    function cambiarCantidad(delta) {
+      const max = productoActual?.stock || 99;
+      cantidad = Math.max(1, Math.min(max, cantidad + delta));
+      document.getElementById('cantidadNum').textContent  = cantidad;
+      document.getElementById('totalPagar').textContent   = formatearPrecio(productoActual.precio * cantidad);
+    }
+
+    function seleccionarPago(metodo, btn) {
+      pagoSeleccionado = metodo;
+      document.querySelectorAll('.pago-card').forEach(c => c.classList.remove('seleccionado'));
+      btn.classList.add('seleccionado');
+    }
+
+    function solicitarPedido() {
+      const p = productoActual;
+      const total = formatearPrecio(p.precio * cantidad);
+      let msg = '';
+
+      if (pagoSeleccionado === 'mercadopago') {
+        msg = `Tu pedido de ${cantidad}× "${p.nombre}" por ${total} está listo. En breve recibirás el enlace de pago por MercadoPago.`;
+      } else {
+        msg = `Tu pedido de ${cantidad}× "${p.nombre}" por ${total} fue registrado. La vendedora te enviará los datos para transferencia por WhatsApp.`;
+      }
+
+      document.getElementById('confirmMsg').textContent = msg;
+      document.getElementById('confirmacion').style.display = 'block';
+      document.getElementById('confirmacion').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+
+</body>
+</html>

@@ -1,17 +1,36 @@
-// Middleware para verificar token JWT
-const jwt = require('jsonwebtoken');
-const SECRET = 'clave_secreta_femmconecta';
+// ═══════════════════════════════════════════════════
+// Middleware de autenticación
+// Verifica que haya sesión activa antes de permitir
+// acceso a rutas protegidas
+// ═══════════════════════════════════════════════════
 
-function verificarToken(req, res, next) {
-  const token = req.headers['authorization'];
-  if (!token) return res.status(403).json({ error: 'Token requerido' });
-
-  jwt.verify(token, SECRET, (err, decoded) => {
-    if (err) return res.status(401).json({ error: 'Token inválido' });
-    req.usuarioId = decoded.id;
-    req.rol = decoded.rol;
-    next();
-  });
+/**
+ * Verifica si el usuario ha iniciado sesión.
+ * Si no, responde con 401 Unauthorized.
+ */
+function verificarSesion(req, res, next) {
+  if (req.session && req.session.usuario) {
+    // Usuario autenticado → continuar
+    return next();
+  }
+  return res.status(401).json({ error: 'Debes iniciar sesión para continuar.' });
 }
 
-module.exports = { verificarToken, SECRET };
+/**
+ * Verifica que el usuario tenga un rol específico.
+ * Uso: verificarRol('mentora') o verificarRol(['emprendedora','mentora'])
+ */
+function verificarRol(roles) {
+  return (req, res, next) => {
+    if (!req.session || !req.session.usuario) {
+      return res.status(401).json({ error: 'No autenticado.' });
+    }
+    const rolesPermitidos = Array.isArray(roles) ? roles : [roles];
+    if (rolesPermitidos.includes(req.session.usuario.rol)) {
+      return next();
+    }
+    return res.status(403).json({ error: 'No tienes permiso para esta acción.' });
+  };
+}
+
+module.exports = { verificarSesion, verificarRol };

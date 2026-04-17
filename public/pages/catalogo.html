@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo — FEMMConecta</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--morado-oscuro), #7b3fa0);
+      padding: 4rem 1.5rem 3rem; text-align: center;
+    }
+    .page-header h1 { color: #fff; }
+    .page-header p  { color: rgba(255,255,255,0.8); margin-top: 0.5rem; }
+
+    /* Barra de filtros */
+    .filtros-bar {
+      background: var(--blanco);
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      position: sticky; top: 68px; z-index: 50;
+    }
+    .filtros-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;
+    }
+    .filtros-inner input {
+      flex: 1; min-width: 200px;
+      padding: 0.6rem 1rem;
+      border: 2px solid var(--gris-borde);
+      border-radius: 50px;
+      font-family: inherit; font-size: 0.9rem;
+      outline: none; transition: var(--transicion);
+    }
+    .filtros-inner input:focus { border-color: var(--morado-claro); }
+    .filtro-cat {
+      padding: 0.5rem 1.1rem;
+      border-radius: 50px;
+      border: 2px solid var(--gris-borde);
+      font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; background: var(--crema);
+      color: var(--gris-texto);
+      transition: var(--transicion);
+    }
+    .filtro-cat.activo {
+      background: var(--morado); color: #fff; border-color: var(--morado);
+    }
+    .filtro-cat:hover:not(.activo) { border-color: var(--morado-claro); }
+
+    /* Conteo */
+    .catalogo-header {
+      max-width: 1200px; margin: 2rem auto 1rem;
+      padding: 0 1.5rem;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 0.5rem;
+    }
+    .catalogo-count { font-size: 0.9rem; color: var(--morado-claro); font-weight: 500; }
+
+    /* Cards de producto */
+    .cat-grid {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 1.5rem 4rem;
+    }
+    .prod-card { cursor: pointer; }
+    .prod-img {
+      height: 210px; overflow: hidden; position: relative;
+    }
+    .prod-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.45s ease;
+    }
+    .prod-card:hover .prod-img img { transform: scale(1.08); }
+    .prod-badge-cat {
+      position: absolute; top: 0.75rem; left: 0.75rem;
+    }
+    .prod-body { padding: 1.25rem; }
+    .prod-nombre {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; color: var(--morado-oscuro);
+      font-weight: 700; margin-bottom: 0.3rem;
+    }
+    .prod-vendedora {
+      font-size: 0.78rem; color: #888;
+      margin-bottom: 0.6rem;
+    }
+    .prod-desc {
+      font-size: 0.85rem; color: #666;
+      line-height: 1.55; margin-bottom: 1rem;
+    }
+    .prod-footer {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 0.5rem;
+    }
+    .prod-precio {
+      font-size: 1.25rem; font-weight: 700; color: var(--rosa);
+    }
+
+    /* Sin resultados */
+    .sin-resultados {
+      text-align: center; padding: 4rem 1rem;
+      color: var(--morado-claro); grid-column: 1 / -1;
+    }
+    .sin-resultados span { font-size: 3rem; display: block; margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="navbar"></nav>
+
+  <div class="page-header">
+    <h1>Catálogo de Productos 🛍️</h1>
+    <p>Todo lo que nuestras emprendedoras han creado para ti</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filtros-bar">
+    <div class="filtros-inner">
+      <input type="text" id="buscador" placeholder="🔍 Buscar producto..." oninput="filtrar()">
+      <button class="filtro-cat activo" data-cat="" onclick="seleccionarCat('', this)">Todos</button>
+      <button class="filtro-cat" data-cat="Alimentos"  onclick="seleccionarCat('Alimentos', this)">🍯 Alimentos</button>
+      <button class="filtro-cat" data-cat="Salud"      onclick="seleccionarCat('Salud', this)">💊 Salud</button>
+      <button class="filtro-cat" data-cat="Plantas"    onclick="seleccionarCat('Plantas', this)">🌿 Plantas</button>
+      <button class="filtro-cat" data-cat="Arte"       onclick="seleccionarCat('Arte', this)">🎨 Arte</button>
+      <button class="filtro-cat" data-cat="Decoración" onclick="seleccionarCat('Decoración', this)">🌸 Decoración</button>
+    </div>
+  </div>
+
+  <div class="catalogo-header">
+    <p class="catalogo-count" id="conteo">Cargando...</p>
+  </div>
+
+  <div id="alertaContainer" style="max-width:1200px; margin:0 auto; padding:0 1.5rem;"></div>
+
+  <div class="cat-grid">
+    <div class="grid-4" id="gridProductos">
+      <div class="loader-wrap" style="grid-column:1/-1;"><div class="loader"></div></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">FEMM<span>Conecta</span></div>
+        <p style="font-size:0.88rem;">Plataforma digital para mujeres emprendedoras de la GAM, CDMX.</p>
+      </div>
+      <div>
+        <p class="footer-h4">Navegar</p>
+        <ul class="footer-links">
+          <li><a href="dashboard.html">Inicio</a></li>
+          <li><a href="emprendedoras.html">Emprendedoras</a></li>
+          <li><a href="mentoras.html">Mentoras</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-h4">Pilares GAM</p>
+        <ul class="footer-links">
+          <li><a href="#">Gustavo A. Madero</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">© 2024 FEMMConecta · Pilares Gustavo A. Madero</p>
+  </footer>
+
+  <script src="../js/app.js"></script>
+  <script>
+    let todosProductos  = [];
+    let categoriaActual = '';
+    let busquedaActual  = '';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const usuario = Auth.requerirSesion();
+      if (!usuario) return;
+      construirNavbar('catalogo.html');
+
+      try {
+        const res = await apiFetch('/api/productos');
+        todosProductos = res.productos;
+        renderProductos();
+
+        // Filtro por vendedora desde URL
+        const params = new URLSearchParams(location.search);
+        const vendId = params.get('vendedora');
+        if (vendId) {
+          todosProductos = todosProductos.filter(p => p.vendedora_id === vendId);
+          renderProductos();
+        }
+      } catch (err) {
+        mostrarAlerta('alertaContainer', 'Error cargando productos: ' + err.message, 'error');
+      }
+    });
+
+    function seleccionarCat(cat, btn) {
+      categoriaActual = cat;
+      document.querySelectorAll('.filtro-cat').forEach(b => b.classList.remove('activo'));
+      btn.classList.add('activo');
+      renderProductos();
+    }
+
+    function filtrar() {
+      busquedaActual = document.getElementById('buscador').value.toLowerCase();
+      renderProductos();
+    }
+
+    function renderProductos() {
+      let lista = todosProductos;
+
+      if (categoriaActual) {
+        lista = lista.filter(p => p.categoria === categoriaActual);
+      }
+      if (busquedaActual) {
+        lista = lista.filter(p =>
+          p.nombre.toLowerCase().includes(busquedaActual) ||
+          p.descripcion.toLowerCase().includes(busquedaActual) ||
+          p.vendedora.toLowerCase().includes(busquedaActual)
+        );
+      }
+
+      document.getElementById('conteo').textContent = `${lista.length} producto${lista.length !== 1 ? 's' : ''} encontrado${lista.length !== 1 ? 's' : ''}`;
+
+      const grid = document.getElementById('gridProductos');
+      if (!lista.length) {
+        grid.innerHTML = `
+          <div class="sin-resultados">
+            <span>🔍</span>
+            <p>No encontramos productos con esos filtros.</p>
+            <button class="btn btn-secundario btn-sm" onclick="limpiarFiltros()" style="margin-top:1rem;">Limpiar filtros</button>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = lista.map((p, i) => `
+        <div class="card prod-card fade-in fade-in-${Math.min(i%4+1, 4)}" onclick="irATienda('${p.id}')">
+          <div class="prod-img">
+            <img src="${p.imagen}" alt="${p.nombre}" loading="lazy"
+                 onerror="this.src='https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&q=80'">
+            <span class="badge badge-morado prod-badge-cat">${p.categoria}</span>
+          </div>
+          <div class="prod-body">
+            <p class="prod-nombre">${p.nombre}</p>
+            <p class="prod-vendedora">🌸 ${p.vendedora}</p>
+            <p class="prod-desc">${truncar(p.descripcion, 90)}</p>
+            <div class="prod-footer">
+              <span class="prod-precio">${formatearPrecio(p.precio)}</span>
+              <span class="btn btn-primario btn-sm">Ver →</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function irATienda(id) {
+      window.location.href = `tienda.html?id=${id}`;
+    }
+
+    function limpiarFiltros() {
+      busquedaActual  = '';
+      categoriaActual = '';
+      document.getElementById('buscador').value = '';
+      document.querySelectorAll('.filtro-cat').forEach((b, i) => b.classList.toggle('activo', i === 0));
+      renderProductos();
+    }
+  </script>
+
+</body>
+</html>

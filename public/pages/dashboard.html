@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — FEMMConecta</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <style>
+    /* ── Hero del dashboard ─────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, var(--morado-oscuro) 0%, var(--morado) 60%, #9b59b6 100%);
+      padding: 5rem 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=1400&q=50') center/cover;
+      opacity: 0.08;
+    }
+    .hero > * { position: relative; z-index: 1; }
+    .hero-saludo {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      color: var(--rosa-suave);
+      padding: 0.4rem 1.2rem;
+      border-radius: 50px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    .hero h1 { color: #fff; margin-bottom: 1rem; }
+    .hero h1 span { color: var(--rosa-suave); }
+    .hero p { color: rgba(255,255,255,0.8); font-size: 1.1rem; max-width: 560px; margin: 0 auto 2rem; }
+    .hero-botones { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    /* ── Stats ──────────────────────────────────── */
+    .stats-bar {
+      background: var(--blanco);
+      padding: 2rem 1.5rem;
+      box-shadow: var(--sombra);
+    }
+    .stats-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 1rem; text-align: center;
+    }
+    .stat-item { padding: 1rem; border-right: 1px solid var(--gris-borde); }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem; font-weight: 900;
+      color: var(--morado);
+      line-height: 1;
+    }
+    .stat-label { font-size: 0.85rem; color: var(--morado-claro); margin-top: 0.25rem; }
+
+    /* ── Sección productos destacados ───────────── */
+    .producto-card .producto-img {
+      height: 200px; overflow: hidden;
+    }
+    .producto-card .producto-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+    .producto-card:hover .producto-img img { transform: scale(1.06); }
+    .producto-body { padding: 1.25rem; }
+    .producto-cat { font-size: 0.78rem; color: var(--morado-claro); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.4rem; }
+    .producto-nombre { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--morado-oscuro); margin-bottom: 0.5rem; font-weight: 700; }
+    .producto-vendedora { font-size: 0.82rem; color: #888; margin-bottom: 0.75rem; }
+    .producto-footer { display: flex; align-items: center; justify-content: space-between; }
+    .producto-precio { font-size: 1.2rem; font-weight: 700; color: var(--rosa); }
+
+    /* ── Mentoras destacadas ────────────────────── */
+    .mentora-card { text-align: center; padding: 2rem 1.5rem; }
+    .mentora-avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%; object-fit: cover;
+      border: 3px solid var(--rosa-suave);
+      margin: 0 auto 1rem;
+    }
+    .mentora-nombre { font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 0.25rem; }
+    .mentora-esp { font-size: 0.85rem; color: var(--morado-claro); margin-bottom: 1rem; }
+
+    /* ── Emprendedoras ──────────────────────────── */
+    .emprend-card { display: flex; gap: 1rem; padding: 1.25rem; align-items: center; }
+    .emprend-avatar { width: 65px; height: 65px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .emprend-info { flex: 1; }
+    .emprend-nombre { font-weight: 600; color: var(--morado-oscuro); margin-bottom: 0.2rem; }
+    .emprend-esp { font-size: 0.82rem; color: var(--morado-claro); }
+
+    /* ── Banner CTA ─────────────────────────────── */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--rosa) 0%, var(--morado) 100%);
+      border-radius: 20px;
+      padding: 3.5rem 2rem;
+      text-align: center;
+      margin: 0 1.5rem;
+    }
+    .cta-banner h2 { color: #fff; margin-bottom: 0.75rem; }
+    .cta-banner p  { color: rgba(255,255,255,0.85); margin-bottom: 1.75rem; }
+
+    @media (max-width: 760px) {
+      .stats-inner { grid-template-columns: repeat(2, 1fr); }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--gris-borde); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar"></nav>
+
+  <!-- Hero personalizado -->
+  <section class="hero">
+    <span class="hero-saludo" id="heroSaludo">👋 Cargando...</span>
+    <h1 id="heroTitulo">Tu espacio de <span>emprendimiento</span></h1>
+    <p>Conecta, vende y crece junto a una comunidad de mujeres que se impulsan mutuamente.</p>
+    <div class="hero-botones">
+      <a href="catalogo.html" class="btn btn-primario">Ver catálogo 🛍️</a>
+      <a href="mentoras.html" class="btn btn-blanco">Buscar mentora ⭐</a>
+    </div>
+  </section>
+
+  <!-- Estadísticas -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item fade-in fade-in-1">
+        <div class="stat-num" id="statEmprend">—</div>
+        <div class="stat-label">Emprendedoras activas</div>
+      </div>
+      <div class="stat-item fade-in fade-in-2">
+        <div class="stat-num" id="statProd">—</div>
+        <div class="stat-label">Productos disponibles</div>
+      </div>
+      <div class="stat-item fade-in fade-in-3">
+        <div class="stat-num" id="statMentoras">—</div>
+        <div class="stat-label">Mentoras expertas</div>
+      </div>
+      <div class="stat-item fade-in fade-in-4">
+        <div class="stat-num">GAM</div>
+        <div class="stat-label">Gustavo A. Madero</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Productos Destacados -->
+  <section class="seccion contenedor">
+    <div class="seccion-titulo">
+      <h2 class="titulo-deco">Productos Destacados</h2>
+      <p>Descubre lo que nuestras emprendedoras han creado con amor</p>
+    </div>
+    <div class="grid-3" id="productosDestacados">
+      <div class="loader-wrap"><div class="loader"></div></div>
+    </div>
+    <div style="text-align:center; margin-top:2.5rem;">
+      <a href="catalogo.html" class="btn btn-secundario">Ver todos los productos →</a>
+    </div>
+  </section>
+
+  <!-- Emprendedoras y Mentoras -->
+  <section class="seccion" style="background: linear-gradient(180deg, var(--crema) 0%, #f0e8fa 100%);">
+    <div class="contenedor">
+      <div class="grid-2" style="gap:3rem;">
+
+        <!-- Emprendedoras -->
+        <div>
+          <div class="seccion-titulo" style="text-align:left;">
+            <h2 class="titulo-deco" style="--after-margin:0">Emprendedoras</h2>
+            <p>Mujeres que crean, venden y transforman</p>
+          </div>
+          <div id="listaEmprend" style="display:flex; flex-direction:column; gap:1rem;"></div>
+          <a href="emprendedoras.html" class="btn btn-secundario btn-sm" style="margin-top:1.5rem;">Ver todas →</a>
+        </div>
+
+        <!-- Mentoras -->
+        <div>
+          <div class="seccion-titulo" style="text-align:left;">
+            <h2 class="titulo-deco">Mentoras</h2>
+            <p>Expertas que guían tu camino</p>
+          </div>
+          <div class="grid-2" id="listaMentoras"></div>
+          <a href="mentoras.html" class="btn btn-secundario btn-sm" style="margin-top:1.5rem;">Ver todas →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Banner CTA -->
+  <section class="seccion">
+    <div class="contenedor">
+      <div class="cta-banner fade-in">
+        <h2>¿Lista para dar el siguiente paso?</h2>
+        <p>Agenda una mentoría gratuita con una de nuestras expertas y transforma tu emprendimiento.</p>
+        <a href="mentoras.html" class="btn btn-blanco">Quiero una mentoría 💜</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div>
+        <div class="footer-logo">FEMM<span>Conecta</span></div>
+        <p style="font-size:0.88rem;">Plataforma digital para mujeres emprendedoras de la Alcaldía Gustavo A. Madero, CDMX. Un proyecto de Pilares.</p>
+      </div>
+      <div>
+        <p class="footer-h4">Navegar</p>
+        <ul class="footer-links">
+          <li><a href="dashboard.html">Inicio</a></li>
+          <li><a href="emprendedoras.html">Emprendedoras</a></li>
+          <li><a href="catalogo.html">Catálogo</a></li>
+          <li><a href="mentoras.html">Mentoras</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-h4">Contacto</p>
+        <ul class="footer-links">
+          <li><a href="contacto.html">Formulario</a></li>
+          <li><a href="https://wa.me/5215512345678" target="_blank">WhatsApp</a></li>
+          <li><a href="#">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer-base">© 2024 FEMMConecta · Pilares Gustavo A. Madero · Hecho con 💜 en CDMX</p>
+  </footer>
+
+  <script src="../js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Verificar sesión
+      const usuario = Auth.requerirSesion();
+      if (!usuario) return;
+
+      // Construir navbar
+      construirNavbar('dashboard.html');
+
+      // Personalizar saludo
+      document.getElementById('heroSaludo').textContent = `👋 Hola, ${usuario.nombre.split(' ')[0]}`;
+
+      // Cargar datos en paralelo
+      try {
+        const [resProd, resEmp, resMent] = await Promise.all([
+          apiFetch('/api/productos'),
+          apiFetch('/api/usuarios/emprendedoras'),
+          apiFetch('/api/mentoras')
+        ]);
+
+        // Stats
+        document.getElementById('statEmprend').textContent  = resEmp.total;
+        document.getElementById('statProd').textContent     = resProd.total;
+        document.getElementById('statMentoras').textContent = resMent.total;
+
+        // Productos destacados (primeros 3)
+        const prodHTML = resProd.productos.slice(0, 3).map(p => `
+          <div class="card producto-card fade-in">
+            <div class="producto-img">
+              <img src="${p.imagen}" alt="${p.nombre}" loading="lazy"
+                   onerror="this.src='https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=600&q=80'">
+            </div>
+            <div class="producto-body">
+              <p class="producto-cat">${p.categoria}</p>
+              <p class="producto-nombre">${p.nombre}</p>
+              <p class="producto-vendedora">por ${p.vendedora}</p>
+              <div class="producto-footer">
+                <span class="producto-precio">${formatearPrecio(p.precio)}</span>
+                <a href="tienda.html?id=${p.id}" class="btn btn-primario btn-sm">Ver más</a>
+              </div>
+            </div>
+          </div>
+        `).join('');
+        document.getElementById('productosDestacados').innerHTML = prodHTML || '<p>Sin productos aún.</p>';
+
+        // Emprendedoras (primeras 3)
+        const empHTML = resEmp.emprendedoras.slice(0, 3).map(e => `
+          <div class="card emprend-card fade-in">
+            <img class="emprend-avatar" src="${e.foto}" alt="${e.nombre}"
+                 onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
+            <div class="emprend-info">
+              <p class="emprend-nombre">${e.nombre}</p>
+              <p class="emprend-esp">${e.especialidad}</p>
+            </div>
+            <a href="emprendedoras.html?id=${e.id}" class="btn btn-secundario btn-sm">Ver</a>
+          </div>
+        `).join('');
+        document.getElementById('listaEmprend').innerHTML = empHTML || '<p>Sin emprendedoras aún.</p>';
+
+        // Mentoras (primeras 2)
+        const mentHTML = resMent.mentoras.slice(0, 2).map(m => `
+          <div class="card mentora-card fade-in">
+            <img class="mentora-avatar" src="${m.foto}" alt="${m.nombre}"
+                 onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=80'">
+            <p class="mentora-nombre">${m.nombre}</p>
+            <p class="mentora-esp">${m.especialidad}</p>
+            <a href="agenda.html?mentora=${m.id}" class="btn btn-primario btn-sm">Agendar</a>
+          </div>
+        `).join('');
+        document.getElementById('listaMentoras').innerHTML = mentHTML || '<p>Sin mentoras aún.</p>';
+
+      } catch (err) {
+        console.error('Error cargando dashboard:', err.message);
+      }
+    });
+  </script>
+
+</body>
+</html>

@@ -1,13 +1,148 @@
-// Funciones globales reutilizables
-function obtenerToken() {
-  return localStorage.getItem('token');
+// ═══════════════════════════════════════════════════
+// app.js — Lógica compartida de FEMMConecta
+// Navbar, sesión, fetch helpers, utilidades
+// ═══════════════════════════════════════════════════
+
+/* ── Utilidades de sesión ────────────────────────── */
+const Auth = {
+  /**
+   * Devuelve el usuario guardado en localStorage
+   * o null si no existe
+   */
+  getUsuario() {
+    const raw = localStorage.getItem('femm_usuario');
+    try { return raw ? JSON.parse(raw) : null; } catch { return null; }
+  },
+
+  /**
+   * Verifica si hay sesión activa.
+   * Si no la hay, redirige al login.
+   */
+  requerirSesion() {
+    const u = this.getUsuario();
+    if (!u) {
+      window.location.href = '../index.html';
+      return null;
+    }
+    return u;
+  },
+
+  /**
+   * Cierra sesión: limpia localStorage y llama al server
+   */
+  async cerrarSesion() {
+    localStorage.removeItem('femm_usuario');
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (_) {}
+    window.location.href = '../index.html';
+  }
+};
+
+/* ── Fetch helper ────────────────────────────────── */
+async function apiFetch(url, opciones = {}) {
+  const defaults = {
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include'
+  };
+  const config = { ...defaults, ...opciones };
+  if (config.body && typeof config.body === 'object') {
+    config.body = JSON.stringify(config.body);
+  }
+  const res  = await fetch(url, config);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Error en la petición');
+  return data;
 }
 
-function usuarioLogueado() {
-  return !!obtenerToken();
+/* ── Construir Navbar dinámico ───────────────────── */
+function construirNavbar(paginaActiva = '') {
+  const usuario = Auth.getUsuario();
+  if (!usuario) return;
+
+  const navbar = document.getElementById('navbar');
+  if (!navbar) return;
+
+  const links = [
+    { href: 'dashboard.html',    texto: 'Inicio',        icon: '🏠' },
+    { href: 'emprendedoras.html',texto: 'Emprendedoras', icon: '🌸' },
+    { href: 'catalogo.html',     texto: 'Catálogo',      icon: '🛍️' },
+    { href: 'mentoras.html',     texto: 'Mentoras',      icon: '⭐' },
+    { href: 'contacto.html',     texto: 'Contacto',      icon: '💌' }
+  ];
+
+  const navLinks = links.map(l => `
+    <a href="${l.href}" class="${paginaActiva === l.href ? 'activo' : ''}">
+      ${l.texto}
+    </a>
+  `).join('');
+
+  navbar.innerHTML = `
+    <div class="navbar-inner">
+      <a href="dashboard.html" class="navbar-logo">FEMM<span>Conecta</span></a>
+
+      <nav class="navbar-nav" id="navMenu">
+        ${navLinks}
+      </nav>
+
+      <div class="navbar-usuario">
+        <img class="navbar-avatar"
+             src="${usuario.foto || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80'}"
+             alt="${usuario.nombre}"
+             onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&q=80'">
+        <span class="navbar-nombre">${usuario.nombre.split(' ')[0]}</span>
+        <button class="btn-logout" onclick="Auth.cerrarSesion()">Salir</button>
+      </div>
+
+      <button class="navbar-toggle" onclick="toggleMenu()" aria-label="Menú">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  `;
 }
 
-function cerrarSesion() {
-  localStorage.clear();
-  window.location.href = 'login.html';
+function toggleMenu() {
+  document.getElementById('navMenu')?.classList.toggle('abierto');
 }
+
+/* ── Botón WhatsApp flotante ─────────────────────── */
+function agregarBotonWhatsApp(numero = '5215512345678', mensaje = 'Hola, quiero saber más de FEMMConecta') {
+  const url = `https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`;
+  const btn = document.createElement('a');
+  btn.href = url;
+  btn.target = '_blank';
+  btn.rel = 'noopener noreferrer';
+  btn.className = 'btn-whatsapp';
+  btn.title = 'Escríbenos por WhatsApp';
+  btn.setAttribute('aria-label', 'WhatsApp');
+  btn.innerHTML = `
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+  `;
+  document.body.appendChild(btn);
+}
+
+/* ── Formatear precio MXN ────────────────────────── */
+function formatearPrecio(num) {
+  return new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(num);
+}
+
+/* ── Mostrar alerta en un contenedor ─────────────── */
+function mostrarAlerta(contenedorId, mensaje, tipo = 'info') {
+  const el = document.getElementById(contenedorId);
+  if (!el) return;
+  el.innerHTML = `<div class="alerta alerta-${tipo}">${mensaje}</div>`;
+  setTimeout(() => { el.innerHTML = ''; }, 5000);
+}
+
+/* ── Truncar texto ───────────────────────────────── */
+function truncar(texto, max = 100) {
+  return texto.length > max ? texto.substring(0, max) + '...' : texto;
+}
+
+/* ── Inicializar en cada página ──────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  // Agregar botón de WhatsApp global
+  agregarBotonWhatsApp();
+});

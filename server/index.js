@@ -31,7 +31,7 @@ app.use(session({
 }));
 
 // Servir archivos estáticos desde /public
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.static(path.join(__dirname, '../docs')));
 
 // ── Rutas de la API ───────────────────────────────
 app.use('/api/auth',      authRoutes);
@@ -41,7 +41,7 @@ app.use('/api/usuarios',  usuariosRoutes);
 
 // ── Ruta raíz → redirige a login ─────────────────
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
+  res.sendFile(path.join(__dirname, '../docs/index.html'));
 });
 
 // ── Manejo de errores 404 ─────────────────────────

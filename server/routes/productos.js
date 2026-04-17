@@ -39,7 +39,7 @@ router.get('/', (req, res) => {
 });
 
 // ── GET /api/productos/:id ────────────────────────
-/*router.get('/:id', (req, res) => {
+router.get('/:id', (req, res) => {
   const db = leerDB();
   const producto = db.productos.find(p => p.id === req.params.id);
 
@@ -57,11 +57,11 @@ router.get('/', (req, res) => {
       : null
   });
 });
-*/
+
 // Obtener todos los productos (actualmente es público)
-router.get('/', (req, res) => {
+/*router.get('/', (req, res) => {
   res.json(db.obtenerProductos());
-});
+});*/
 // ── POST /api/productos ───────────────────────────
 router.post('/', verificarSesion, verificarRol('emprendedora'), (req, res) => {
   const { nombre, descripcion, precio, categoria, imagen, stock } = req.body;

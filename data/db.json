@@ -45,7 +45,13 @@
       "especialidad": "Marketing digital y redes sociales",
       "bio": "10 años ayudando a mujeres a construir su marca personal en línea. Especialista en Instagram y TikTok para negocios.",
       "foto": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80",
-      "disponibilidad": ["Lunes 10:00", "Lunes 16:00", "Martes 11:00", "Miércoles 14:00", "Jueves 10:00"],
+      "disponibilidad": [
+        "Lunes 10:00",
+        "Lunes 16:00",
+        "Martes 11:00",
+        "Miércoles 14:00",
+        "Jueves 10:00"
+      ],
       "whatsapp": "5215544332211",
       "ubicacion": "CDMX"
     },
@@ -58,7 +64,12 @@
       "especialidad": "Organización profesional y productividad",
       "bio": "Consultora certificada en gestión de negocios. Te ayudo a organizar tu empresa para que crezcas sin agotarte.",
       "foto": "https://images.unsplash.com/photo-1573496799652-408c2ac9fe98?w=400&q=80",
-      "disponibilidad": ["Martes 09:00", "Miércoles 11:00", "Viernes 10:00", "Viernes 15:00"],
+      "disponibilidad": [
+        "Martes 09:00",
+        "Miércoles 11:00",
+        "Viernes 10:00",
+        "Viernes 15:00"
+      ],
       "whatsapp": "5215577889900",
       "ubicacion": "CDMX"
     },
@@ -140,5 +151,14 @@
     }
   ],
   "solicitudes_mentoria": [],
-  "mensajes_contacto": []
+  "mensajes_contacto": [
+    {
+      "id": "msg_1776395813249",
+      "nombre": "Agustina Hernández",
+      "email": "agustina@femm.mx",
+      "asunto": "Quiero ser mentora",
+      "mensaje": "quiero apoyar a la comunidad",
+      "fecha": "2026-04-17T03:16:53.250Z"
+    }
+  ]
 }

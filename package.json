@@ -17,7 +17,15 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   },
-  "keywords": ["emprendimiento", "mujeres", "CDMX", "pilares"],
+  "keywords": [
+    "emprendimiento",
+    "mujeres",
+    "CDMX",
+    "pilares"
+  ],
   "author": "FEMMConecta - Pilares GAM",
-  "license": "MIT"
+  "license": "MIT",
+  "directories": {
+    "doc": "docs"
+  }
 }

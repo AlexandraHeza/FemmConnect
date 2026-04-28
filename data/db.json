@@ -150,7 +150,44 @@
       "vendedora": "Mónica Mendoza"
     }
   ],
-  "solicitudes_mentoria": [],
+  "solicitudes_mentoria": [
+    {
+      "id": "sol_1776456609266",
+      "mentora_id": "m1",
+      "mentora_nombre": "Rocío Elizabeth",
+      "nombre": "Agustina Hernández",
+      "email": "agustina@femm.mx",
+      "telefono": "",
+      "horario": "Lunes 10:00",
+      "tema": "Cómo empezar mi negocio desde cero",
+      "estado": "pendiente",
+      "fecha": "2026-04-17T20:10:09.269Z"
+    },
+    {
+      "id": "sol_1777066908906",
+      "mentora_id": "m1",
+      "mentora_nombre": "Rocío Elizabeth",
+      "nombre": "Agustina Hernández",
+      "email": "agustina@femm.mx",
+      "telefono": "5512345678",
+      "horario": "Lunes 16:00",
+      "tema": "Otro tema",
+      "estado": "pendiente",
+      "fecha": "2026-04-24T21:41:48.907Z"
+    },
+    {
+      "id": "sol_1777069384641",
+      "mentora_id": "m2",
+      "mentora_nombre": "Ana Villegas",
+      "nombre": "Agustina Hernández",
+      "email": "agustina@femm.mx",
+      "telefono": "",
+      "horario": "Viernes 15:00",
+      "tema": "Otro tema",
+      "estado": "pendiente",
+      "fecha": "2026-04-24T22:23:04.645Z"
+    }
+  ],
   "mensajes_contacto": [
     {
       "id": "msg_1776395813249",
